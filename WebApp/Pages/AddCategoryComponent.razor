@@ -1,0 +1,51 @@
+﻿@page "/addcategory"
+
+@inject NavigationManager NavMan
+@inject IAddCategory AddCat
+<div class="col-12">
+    <div class="nav">
+        <div class="col-6 offset-3">
+            <h1>Add Category</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+           @if(category is not null)
+            {
+              <AddOrEditComponentComponent
+                                           category="@category"
+                                           OnValidation="@OnValidation"
+                                           >
+
+              </AddOrEditComponentComponent>
+            }
+        </div>
+    </div>
+</div>
+@code {
+    private Category category;
+
+    protected override void OnInitialized()
+    {
+
+        base.OnInitialized(); 
+        category = new Category();
+    }
+    private async void OnValidation()
+    {
+        if(category is not null)
+        {
+            await Task.Run(()=> AddCat.Execute(category));
+            NavigateMethod();
+        }
+    }
+    private void OnClickCancel()
+    {
+        NavigateMethod();
+    }
+    private void NavigateMethod()
+    {
+        NavMan.NavigateTo("/categories");
+    }
+
+}

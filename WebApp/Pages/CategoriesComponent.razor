@@ -1,0 +1,62 @@
+﻿@page "/categories"
+
+@inject NavigationManager navManager;
+@inject UseCases.IViewCategories viewCategoryes;
+
+@if (catgoryes != null)
+{
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <td>Description</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cat in catgoryes)
+            {
+                <tr>
+                    <td>@cat.Name</td>
+                    <td>@cat.Description</td>
+                    <td>
+                        <button role="button" class="btn btn-link" @onclick="()=>EditCategory(cat.CategoryId)">Edit</button>
+                    </td>
+                    <td>
+                        <button role="button" class="btn btn-link" @onclick="()=>DeleteCategory(cat.CategoryId)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br />
+<button role="button" class="btn btn-primary" @onclick="OnClickAddCategory">Add Category</button>
+
+@code {
+    private List<Category> catgoryes = new List<Category>();
+
+    protected override async void OnInitialized()
+    {
+        await foreach (var c in viewCategoryes.Execute())
+        {
+            catgoryes.Add(c);
+        }
+
+        base.OnInitialized();
+    }
+    private void OnClickAddCategory()
+    {
+        navManager.NavigateTo("/addcategory");
+    }
+    private void DeleteCategory(int id)
+    {
+
+    }
+    private void EditCategory(int id)
+    {
+        navManager.NavigateTo($"/editcategory/{id}");
+    }
+}

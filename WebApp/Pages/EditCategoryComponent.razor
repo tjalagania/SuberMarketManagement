@@ -1,0 +1,41 @@
+﻿@page "/editcategory/{id:int?}"
+@inject IGetCategory GetCategory
+@inject IEditCategory EditCategory
+<div class="col-12">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <h1>Edit Category</h1>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-6 offset-3">
+            @if (category != null)
+            {
+                <AddOrEditComponentComponent category="category"
+                                             OnValidation="validtaion"></AddOrEditComponentComponent>
+            }
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int? id { get; set; }
+
+    public Category category { get; set; }
+    protected override Task OnInitializedAsync()
+
+    {
+        Task<Category> tcategory = Task.Run(() => GetCategory.Execute((int)id));
+        var ct = tcategory.ConfigureAwait(true);
+        category = ct.GetAwaiter().GetResult();
+        return base.OnInitializedAsync();
+    }
+    private void validtaion()
+    {
+        EditCategory.Execute(category);
+    }
+
+}
